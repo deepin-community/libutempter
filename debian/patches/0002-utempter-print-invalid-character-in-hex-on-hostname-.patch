@@ -1,0 +1,28 @@
+From: =?utf-8?q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Date: Sat, 24 Oct 2020 21:48:13 +0200
+Applied-Upstream: https://github.com/altlinux/libutempter/commit/d1a0e4e9b0f1c631e592128b2dc6afedc1ae6c1d
+Subject: utempter: print invalid character in hex on hostname validation
+ failure
+
+Resolves: https://github.com/altlinux/libutempter/pull/2
+---
+ utempter.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/utempter.c b/utempter.c
+index b0b9d1c..55dc790 100644
+--- a/utempter.c
++++ b/utempter.c
+@@ -68,8 +68,10 @@ static void
+ validate_hostname(const char *host)
+ {
+ 	for (const char *p = host; p[0]; ++p) {
+-		if (!(p == host ? isgraph : isprint)((unsigned char) p[0]))
+-			fatal_error("invalid host name");
++		unsigned char c = (unsigned char) p[0];
++
++		if (!(p == host ? isgraph : isprint)(c))
++			fatal_error("invalid host name (contains %#x)", c);
+ 	}
+ }
+ 

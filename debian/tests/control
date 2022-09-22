@@ -1,0 +1,2 @@
+Tests: test-helper, test-library1, test-library2
+Depends: build-essential, @

@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_CFLAGS_MAINT_APPEND = -Werror -Wextra
+export DEB_CPPFLAGS_MAINT_APPEND = -DUTEMPTER_LOG
+
+%:
+	dh $@
+
+override_dh_fixperms:
+	dh_fixperms
+	chown root:utmp debian/libutempter0/usr/lib/$(DEB_HOST_MULTIARCH)/utempter/utempter
+	chmod 2755 debian/libutempter0/usr/lib/$(DEB_HOST_MULTIARCH)/utempter/utempter

@@ -1,0 +1,68 @@
+#!/bin/sh
+
+set -eu
+
+if [ -n "${DEB_HOST_GNU_TYPE:-}" ]; then
+  CROSS_COMPILE="$DEB_HOST_GNU_TYPE-gcc"
+else
+  CROSS_COMPILE="cc"
+fi
+
+cat <<EOF > test_library1_runner.c
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+
+#include <utempter.h>
+
+#define _XOPEN_SOURCE 600
+#define __USE_XOPEN2KXSI
+#define __USE_XOPEN_EXTENDED
+#include <stdlib.h>
+
+#define		CHECK(x)	do { \
+				    int _ret = (x); \
+				    if (_ret != 0) { \
+					printf(#x " returned %d: %s\n", _ret, strerror(errno)); \
+					exit (1); \
+				    } \
+				} while(0)
+
+int main()
+{
+	setbuf(stdout, NULL);
+
+	const int i = posix_openpt(O_RDWR | O_NOCTTY);
+	printf("## open ptmx returned %d\n", i);
+
+	CHECK(grantpt(i));
+	CHECK(unlockpt(i));
+
+	printf("## ptsname: %s\n", ptsname(i));
+
+	printf("## doing libutempter add\n");
+	CHECK(!utempter_add_record(i, "hostname_test_27182818284590"));
+
+	printf("## checking who\n");
+	CHECK(system("who -a /run/utmp"));
+
+	printf("## doing libutempter del\n");
+	CHECK(!utempter_remove_record(i));
+
+	printf("## checking who\n");
+	CHECK(system("who -a /run/utmp"));
+
+	printf("## DONE\n");
+}
+EOF
+
+${CROSS_COMPILE} -Wall -Wextra -Werror -O2 test_library1_runner.c -lutempter -o test_library1_runner
+./test_library1_runner
+if [ $(./test_library1_runner | grep -c hostname_test_27182818284590) -ne 1 ]; then
+	echo "inserted hostname not found"
+	exit 1
+else
+	echo "inserted hostname found"
+fi

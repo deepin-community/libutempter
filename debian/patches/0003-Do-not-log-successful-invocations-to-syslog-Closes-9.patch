@@ -1,0 +1,24 @@
+From: =?utf-8?q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Date: Sat, 5 Dec 2020 19:40:48 +0100
+Forwarded: not-needed
+Subject: Do not log successful invocations to syslog (Closes: #976398)
+
+They are generated for every opened and closed (virtual) terminal, like
+screen/tmux/xterm/Konsole...
+---
+ utempter.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/utempter.c b/utempter.c
+index 55dc790..041ee4e 100644
+--- a/utempter.c
++++ b/utempter.c
+@@ -119,8 +119,6 @@ write_uwtmp_record(const char *user, const char *term, const char *host,
+ 
+ 	(void) updwtmp(_PATH_WTMP, &ut);
+ 
+-	debug_msg("utmp/wtmp record %s for terminal '%s'",
+-		  add ? "added" : "removed", term);
+ 	return EXIT_SUCCESS;
+ }
+ 

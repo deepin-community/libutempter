@@ -1,0 +1,70 @@
+#!/bin/sh
+
+set -eu
+
+if [ -n "${DEB_HOST_GNU_TYPE:-}" ]; then
+  CROSS_COMPILE="$DEB_HOST_GNU_TYPE-gcc"
+else
+  CROSS_COMPILE="cc"
+fi
+
+cat <<EOF > test_helper_runner.c
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+
+#define _XOPEN_SOURCE 600
+#define __USE_XOPEN2KXSI
+#define __USE_XOPEN_EXTENDED
+#include <stdlib.h>
+
+#define		CHECK(x)	do { \
+				    int _ret = (x); \
+				    if (_ret != 0) { \
+					printf(#x " returned %d: %s\n", _ret, strerror(errno)); \
+					exit (1); \
+				    } \
+				} while(0)
+
+int main()
+{
+	setbuf(stdout, NULL);
+
+	const int i = posix_openpt(O_RDWR | O_NOCTTY);
+	printf("## open ptmx returned %d\n", i);
+
+	CHECK(grantpt(i));
+	CHECK(unlockpt(i));
+
+	printf("## ptsname: %s\n", ptsname(i));
+
+	dup2(i, 0);
+
+	printf("## doing utempter add\n");
+	CHECK(system("/usr/lib/$(dpkg-architecture --query DEB_HOST_MULTIARCH)/utempter/utempter add hostname_test_314159265359"));
+
+	printf("## checking who\n");
+	CHECK(system("who -a /run/utmp"));
+
+	printf("## doing utempter del\n");
+	CHECK(system("/usr/lib/$(dpkg-architecture --query DEB_HOST_MULTIARCH)/utempter/utempter del"));
+
+	printf("## checking who\n");
+	CHECK(system("who -a /run/utmp"));
+
+	printf("## DONE\n");
+
+	return 0;
+}
+EOF
+
+${CROSS_COMPILE} -Wall -Wextra -Werror -O2 test_helper_runner.c -o test_helper_runner
+./test_helper_runner
+if [ $(./test_helper_runner | grep -c hostname_test_314159265359) -ne 1 ]; then
+	echo "inserted hostname not found"
+	exit 1
+else
+	echo "inserted hostname found"
+fi

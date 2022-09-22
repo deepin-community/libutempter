@@ -1,0 +1,3 @@
+multiarch-location.diff
+0002-utempter-print-invalid-character-in-hex-on-hostname-.patch
+0003-Do-not-log-successful-invocations-to-syslog-Closes-9.patch

@@ -1,0 +1,144 @@
+libutempter (1.2.1-2) unstable; urgency=medium
+
+  * d/control: bump to std version 4.5.1 (no further changes)
+  * d/patches:
+    - add patch to silence successful invocations (Closes: #976398)
+    - multiarch-location: update authorship
+    - use upstream patch for printing invalid character
+
+ -- Christian Göttsche <cgzones@googlemail.com>  Sat, 05 Dec 2020 20:05:13 +0100
+
+libutempter (1.2.1-1) unstable; urgency=medium
+
+  * New upstream version 1.2.1
+
+  * Make autopkgtests cross-test-friendly
+    Based on Ubuntu patch by Steve Langasek <steve.langasek@ubuntu.com>
+  * d/control:
+    - bump to debhelper compat level 13
+    - update vcs fields
+  * debian: run wrap-and-sort
+  * d/watch: scan for .tar.gz and bump version
+  * d/upstream/signing-key.asc: update key to A8041FA839E16E36
+  * d/copyright: update years
+  * d/patches: drop patches incorporated upstream and rebase
+
+ -- Christian Göttsche <cgzones@googlemail.com>  Sat, 24 Oct 2020 21:31:47 +0200
+
+libutempter (1.1.6-6) unstable; urgency=medium
+
+  * d/patches: silence all intentional omits of copying null-character
+    Should fix FTBFS on kfreebsd
+
+ -- Christian Göttsche <cgzones@googlemail.com>  Thu, 16 Apr 2020 20:30:17 +0200
+
+libutempter (1.1.6-5) unstable; urgency=medium
+
+  * d/rules: fail on compiler warnings
+  * d/control: bump to std version 4.5.0 (no further changes)
+  * d/patches:
+    - resolve/silence compiler warnings
+    - cast to unsigned char before character handling function
+    - log errors in setgid helper to syslog
+  * d/upstream/signing-key.asc: re-export key without extra signatures
+
+ -- Christian Göttsche <cgzones@googlemail.com>  Tue, 14 Apr 2020 20:14:41 +0200
+
+libutempter (1.1.6-4) unstable; urgency=medium
+
+  * Set myself as new maintainer (Closes: #879388)
+  * Update vcs fields accordingly
+  * Bump to compat level 12
+  * Bump to std version 4.4.1
+  * Enable all hardening options in d/rules
+  * Add autopkg testsuite
+  * Convert d/copyright to machine-readable format
+  * Add standard salsa-ci configuration, exclude reprotest for chown failures
+  * Remove unneeded ignore file for list-missing
+  * Explicit set Build-Depends-Package in d/libutempter0.symbols
+  * Explicit set Rules-Requires-Root to binary-targets
+  * Add C compiler -Wextra flag in d/rules
+  * Patches:
+    - Convert to gbp style
+    - add: Mark old interfaces as deprecated
+    - add: Validate given hostname (Closes: #689562)
+
+ -- Christian Göttsche <cgzones@googlemail.com>  Mon, 30 Sep 2019 23:37:44 +0200
+
+libutempter (1.1.6-3) unstable; urgency=medium
+
+  * Team upload.
+  * Drop the postinst script, the files that were getting chowned are in a
+    different location now, no chown needed. (Closes: #814647) Thanks to
+    Andreas Beckmann for reporting.
+
+ -- Maximiliano Curia <maxy@debian.org>  Thu, 18 Feb 2016 19:47:33 +0100
+
+libutempter (1.1.6-2) unstable; urgency=medium
+
+  * Team upload.
+  * Merge with Ubuntu. (Closes: #812956)
+
+ -- Maximiliano Curia <maxy@debian.org>  Tue, 09 Feb 2016 19:43:36 +0100
+
+libutempter (1.1.6-1ubuntu1) xenial; urgency=medium
+
+  * Multiarchify the library packages.
+
+ -- Matthias Klose <doko@ubuntu.com>  Thu, 28 Jan 2016 03:34:45 +0100
+
+libutempter (1.1.6-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release.
+  * Switch to debhelper compat level 9.
+    - Exports build flags.
+  * Don't overwrite build flags from the environment in the Makefile.
+    - Add Add keep_env_build_flags.diff
+  * Add a watch file, thanks to David Gilman. (Closes: #747483)
+  * Add Vcs-* control fields.
+  * Improve package descriptions.
+  * Retire utempter system group. (Closes: #698858, #545184)
+    - Make /usr/lib/utempter root:root owned. (Closes: #698590)
+  * Bump Standards-Version to 3.9.6, no changes needed.
+  * Enable hardening flags pie and bindnow. (Closes: #759751)
+    - Add filter_pie_shared_lib.diff so the PIE flags are filtered when
+      building the shared library.
+
+ -- Felix Geyer <fgeyer@debian.org>  Sat, 13 Jun 2015 16:56:04 +0200
+
+libutempter (1.1.5-4) unstable; urgency=low
+
+  * Use getent instead of grep /etc/group. (Closes: #614258)
+
+ -- Fathi Boudra <fabo@debian.org>  Mon, 21 Feb 2011 14:10:59 +0200
+
+libutempter (1.1.5-3) unstable; urgency=low
+
+  * Switch to dpkg-source 3.0 (quilt) format.
+  * Update debian/control:
+    - Bump debhelper build dependency version to 7.4.15.
+    - Bump Standards-Version to 3.8.3 (no changes needed).
+  * Update debian/rules:
+    - Enable parallel build (pass --parallel option to dh).
+    - List missing files (pass --list-missing to dh).
+    - Call chown before chmod.
+    - Change utempter permissions to world-readable (2755). (Closes: #573015)
+  * Update debian/libutempter0.lintian-overrides file.
+  * Add debian/libutempter0.symbols file.
+
+ -- Fathi Boudra <fabo@debian.org>  Thu, 22 Apr 2010 14:19:47 +0300
+
+libutempter (1.1.5-2) unstable; urgency=low
+
+  * Update debian/control:
+    - Add dependency on adduser to libutempter0.
+    - Bump Standards-Version to 3.8.3 (no changes needed).
+
+ -- Fathi Boudra <fabo@debian.org>  Sat, 29 Aug 2009 09:52:07 +0200
+
+libutempter (1.1.5-1) unstable; urgency=low
+
+  * Initial release. (Closes: #541021)
+
+ -- Fathi Boudra <fabo@debian.org>  Tue, 11 Aug 2009 09:55:23 +0200

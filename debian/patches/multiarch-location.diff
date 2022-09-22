@@ -1,0 +1,24 @@
+From: Maximiliano Curia <maxy@debian.org>
+Date: Tue, 9 Feb 2016 19:43:36 +0100
+Forwarded: not-needed
+Subject: Support multiarch location
+
+---
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 8c90121..f04d821 100644
+--- a/Makefile
++++ b/Makefile
+@@ -30,8 +30,8 @@ MAP = lib$(PROJECT).map
+ TARGETS = $(PROJECT) $(SHAREDLIB) $(STATICLIB)
+ 
+ INSTALL = install
+-libdir = /usr/lib
+-libexecdir = /usr/lib
++libdir = /usr/lib/$(DEB_HOST_MULTIARCH)
++libexecdir = /usr/lib/$(DEB_HOST_MULTIARCH)
+ includedir = /usr/include
+ mandir = /usr/share/man
+ man3dir = $(mandir)/man3
